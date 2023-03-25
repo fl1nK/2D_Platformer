@@ -3390,6 +3390,7 @@ GameObject:
   - component: {fileID: 1512811652}
   - component: {fileID: 1512811651}
   - component: {fileID: 1512811653}
+  - component: {fileID: 1512811655}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -3407,7 +3408,7 @@ Animator:
   m_GameObject: {fileID: 1512811645}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ffcc7e74b5d924240aea271f7f6d90c0, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -3501,7 +3502,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 2
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -3532,9 +3533,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36580ffbc30ed994ba46c14b46bf2fd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _animator: {fileID: 1512811655}
   _horizontalSpeed: 5
   _faceRight: 1
-  _jumpForce: 7
+  _jumpForce: 10
   _grounded: 0
 --- !u!114 &1512811653
 MonoBehaviour:
@@ -3575,6 +3577,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.6811371, y: 2.4595609}
   m_EdgeRadius: 0
+--- !u!114 &1512811655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1512811645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20e949b531b64a92a243822236e7b76e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1560984549 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4300130158503174794, guid: 8018d41163276e54f9efc1c02cd5160f, type: 3}
@@ -4190,7 +4204,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 6200000, guid: 9c497a4ce1f356b448c0dd3eca091d35, type: 2}
+  m_Material: {fileID: 6200000, guid: 657bd370cb27b6d4aa4cda66e948d195, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0

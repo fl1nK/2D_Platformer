@@ -1,10 +1,14 @@
 using System;
+using System.Data;
+using Player.PlayerAnimation;
 using UnityEngine;
 
 namespace Player
 {
+    [RequireComponent(typeof(Rigidbody2D))]
     public class PlayerEntity : MonoBehaviour
     {
+        [SerializeField] private AnimatorController _animator;
 
         [SerializeField] private float _horizontalSpeed;
         [SerializeField] private bool _faceRight;
@@ -12,37 +16,48 @@ namespace Player
         [SerializeField] private float _jumpForce;
 
         private Rigidbody2D _rigidbody2D;
-
         
         private Sensor_Player _groundSensor;
         [SerializeField] private bool _grounded = false;
+
+        private Vector2 _movement;
+     
         
         void Start()
         {
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _groundSensor = transform.Find("GroundSensor").GetComponent<Sensor_Player>();
-
         }
 
         private void Update()
         {
-            //Check if character just landed on the ground
+            CheckGround();
+            UpdateAnimations();
+        }
+        
+        private void UpdateAnimations()
+        {
+            _animator.PlayAnimation(AnimationType.Run, _movement.magnitude > 0);
+            _animator.PlayAnimation(AnimationType.Jump, !_grounded);
+        }
+        
+        private void CheckGround()
+        {
             if (!_grounded && _groundSensor.State())
             {
                 _grounded = true;
-                //m_animator.SetBool("Grounded", _isJumpint);
             }
             
-            //Check if character just started falling
             if (_grounded && !_groundSensor.State())
             {
                 _grounded = false;
-                //m_animator.SetBool("Grounded", _isJumpint);
             }
         }
-
+        
         public void MoveHorizontal(float direction)
         {
+            _movement.y = direction;
+                
             SetDirection(direction);
             // Vector2 velocity = _rigidbody2D.velocity;
             // velocity.x = movement * _horizontalSpeed;
@@ -72,6 +87,27 @@ namespace Player
         {
             transform.Rotate(0,180,0);
             _faceRight = !_faceRight;
+        }
+
+        public void StartAttack()
+        {
+            if(!_animator.PlayAnimation(AnimationType.Attack, true))
+                return;
+
+            _animator.ActionRequested += Attack;
+            _animator.AnimationEnded += EndAttack;
+        }
+
+        private void Attack()
+        {
+            Debug.Log("Attack");
+        }
+        
+        private void EndAttack()
+        {
+            _animator.ActionRequested -= Attack;
+            _animator.AnimationEnded -= EndAttack;
+            _animator.PlayAnimation(AnimationType.Attack, false);
         }
     }
 }
