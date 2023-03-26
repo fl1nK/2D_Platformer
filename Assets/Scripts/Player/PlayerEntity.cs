@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Data;
 using Player.PlayerAnimation;
 using UnityEngine;
@@ -9,15 +10,16 @@ namespace Player
     public class PlayerEntity : MonoBehaviour
     {
         [SerializeField] private AnimatorController _animator;
-
+        [SerializeField] private Collider2D _playerCollider;
+        
         [SerializeField] private float _horizontalSpeed;
         [SerializeField] private bool _faceRight;
-        
         [SerializeField] private float _jumpForce;
 
         private Rigidbody2D _rigidbody2D;
-        
+        private GameObject _currentOneWayPlatform;
         private Sensor_Player _groundSensor;
+        
         [SerializeField] private bool _grounded = false;
 
         private Vector2 _movement;
@@ -59,10 +61,7 @@ namespace Player
             _movement.y = direction;
                 
             SetDirection(direction);
-            // Vector2 velocity = _rigidbody2D.velocity;
-            // velocity.x = movement * _horizontalSpeed;
-            // _rigidbody2D.velocity = velocity;
-            
+
             _rigidbody2D.velocity = new Vector2(direction * _horizontalSpeed, _rigidbody2D.velocity.y);
         }
 
@@ -108,6 +107,42 @@ namespace Player
             _animator.ActionRequested -= Attack;
             _animator.AnimationEnded -= EndAttack;
             _animator.PlayAnimation(AnimationType.Attack, false);
+        }
+        
+        public void MoveDown(float verticalDirection)
+        {
+            if (verticalDirection < 0)
+            {
+                if (_currentOneWayPlatform != null) { 
+                    StartCoroutine(DisableCollision());
+                }
+            }
+        }
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (collision.gameObject.CompareTag("OneWayPlatform"))
+            {
+                _currentOneWayPlatform = collision.gameObject;
+            }
+        }
+
+        private void OnCollisionExit2D(Collision2D collision)
+        {
+            if (collision.gameObject.CompareTag("OneWayPlatform"))
+            {
+                _currentOneWayPlatform = null;
+            }
+        }
+        
+        // ReSharper disable Unity.PerformanceAnalysis
+        private IEnumerator DisableCollision()
+        {
+            BoxCollider2D platformCollider = _currentOneWayPlatform.GetComponent<BoxCollider2D>();
+
+            Physics2D.IgnoreCollision(_playerCollider, platformCollider);
+            yield return new WaitForSeconds(1f);
+            Physics2D.IgnoreCollision(_playerCollider, platformCollider, false);
         }
     }
 }
