@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5397940416311874041}
   - component: {fileID: 6083273145311202349}
   - component: {fileID: 8190416976986882701}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Platform_Wood
   m_TagString: OneWayPlatform
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8874221825217237496}
   - component: {fileID: 2894520197525781881}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: tileset-sliced_62
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -176,7 +176,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2026367504943009426}
   - component: {fileID: 2486499554669929738}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: tileset-sliced_62 (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -260,7 +260,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6804553732406608720}
   - component: {fileID: 8510869854906726641}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: tileset-sliced_62 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -344,7 +344,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1170746714415557929}
   - component: {fileID: 8148647967597495590}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: tileset-sliced_62 (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -1,7 +1,8 @@
 using System;
 using System.Collections;
-using System.Data;
-using Player.PlayerAnimation;
+using Core.Animation;
+using Core.Movement.Controller;
+using Core.Movement.Data;
 using UnityEngine;
 
 namespace Player
@@ -10,83 +11,49 @@ namespace Player
     public class PlayerEntity : MonoBehaviour
     {
         [SerializeField] private AnimatorController _animator;
-        [SerializeField] private Collider2D _playerCollider;
-        
-        [SerializeField] private float _horizontalSpeed;
-        [SerializeField] private bool _faceRight;
-        [SerializeField] private float _jumpForce;
+        [SerializeField] private DirectionMovementData _directionMovementData;
+        [SerializeField] private JumpData _jumpData;
 
+        private Collider2D _playerCollider;
         private Rigidbody2D _rigidbody2D;
         private GameObject _currentOneWayPlatform;
-        private Sensor_Player _groundSensor;
         
-        [SerializeField] private bool _grounded = false;
+        private DirectionalMover _directionalMover;
+        private Jumper _jumper;
 
-        private Vector2 _movement;
-     
-        
         void Start()
         {
+            _playerCollider = GetComponent<Collider2D>();
             _rigidbody2D = GetComponent<Rigidbody2D>();
-            _groundSensor = transform.Find("GroundSensor").GetComponent<Sensor_Player>();
+            _directionalMover = new DirectionalMover(_rigidbody2D, _directionMovementData);
+            _jumper = new Jumper(_rigidbody2D, _jumpData);
         }
 
         private void Update()
         {
-            CheckGround();
+            _jumper.JumpUpdate();
             UpdateAnimations();
         }
         
         private void UpdateAnimations()
         {
-            _animator.PlayAnimation(AnimationType.Run, _movement.magnitude > 0);
-            _animator.PlayAnimation(AnimationType.Jump, !_grounded);
+            _animator.PlayAnimation(AnimationType.Run, _directionalMover.IsMoving);
+            _animator.PlayAnimation(AnimationType.Jump, _jumper.IsJumping);
         }
+
+        public void MoveHorizontal(float direction) => _directionalMover.MoveHorizontally(direction);
         
-        private void CheckGround()
+        public void MoveDown(float verticalDirection)
         {
-            if (!_grounded && _groundSensor.State())
+            if (verticalDirection < 0)
             {
-                _grounded = true;
-            }
-            
-            if (_grounded && !_groundSensor.State())
-            {
-                _grounded = false;
-            }
-        }
-        
-        public void MoveHorizontal(float direction)
-        {
-            _movement.y = direction;
-                
-            SetDirection(direction);
-
-            _rigidbody2D.velocity = new Vector2(direction * _horizontalSpeed, _rigidbody2D.velocity.y);
-        }
-
-        public void Jump()
-        {
-            if(!_grounded)
-                return;
-
-            _grounded = false;
-            _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, _jumpForce);
-            _groundSensor.Disable(0.2f);
-        }
-        private void SetDirection(float direction)
-        {
-            if (_faceRight && direction < 0 || !_faceRight && direction > 0)
-            {
-                Flip();
+                if (_currentOneWayPlatform != null) { 
+                    StartCoroutine(DisableCollision());
+                }
             }
         }
 
-        private void Flip()
-        {
-            transform.Rotate(0,180,0);
-            _faceRight = !_faceRight;
-        }
+        public void Jump() => _jumper.Jump();
 
         public void StartAttack()
         {
@@ -109,16 +76,6 @@ namespace Player
             _animator.PlayAnimation(AnimationType.Attack, false);
         }
         
-        public void MoveDown(float verticalDirection)
-        {
-            if (verticalDirection < 0)
-            {
-                if (_currentOneWayPlatform != null) { 
-                    StartCoroutine(DisableCollision());
-                }
-            }
-        }
-
         private void OnCollisionEnter2D(Collision2D collision)
         {
             if (collision.gameObject.CompareTag("OneWayPlatform"))

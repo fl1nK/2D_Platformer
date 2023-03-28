@@ -1,23 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Core.Services.Updater;
+using InputReader;
 using Unity.VisualScripting;
 using UnityEngine.PlayerLoop;
 
 namespace Player
 {
-    public class PlayerBrain
+    public class PlayerBrain : IDisposable
     {
         private readonly PlayerEntity _playerEntity;
-        private readonly List<IEntetyInputSource> _inputSources;
+        private readonly List<IEntityInputSource> _inputSources;
 
-        public PlayerBrain(PlayerEntity playerEntity, List<IEntetyInputSource> inputSources)
+        public PlayerBrain(PlayerEntity playerEntity, List<IEntityInputSource> inputSources)
         {
             _playerEntity = playerEntity;
             _inputSources = inputSources;
+            ProjectUpdater.Instance.FixedUpdateCalled += OnFixedUpdate;
         }
 
-        public void OnFixedUpdate()
+        public void Dispose() => ProjectUpdater.Instance.FixedUpdateCalled -= OnFixedUpdate;
+        private void OnFixedUpdate()
         {
             _playerEntity.MoveHorizontal(GetHorizontalDirection());
             _playerEntity.MoveDown(GetVerticalDirection());
@@ -33,9 +37,7 @@ namespace Player
                 inputSource.ResetOneTimeActions();
             }
         }
-
         
-
         private float GetHorizontalDirection()
         {
             foreach (var inputSource in _inputSources)

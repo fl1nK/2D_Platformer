@@ -1,10 +1,9 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Player
+namespace InputReader
 {
-    public class GameUIInputView : MonoBehaviour, IEntetyInputSource
+    public class GameUIInputView : MonoBehaviour, IEntityInputSource
     {
         [SerializeField] private Joystick _joystick;
         [SerializeField] private Button _jumpButton;

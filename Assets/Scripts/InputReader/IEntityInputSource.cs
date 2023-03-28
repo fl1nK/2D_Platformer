@@ -1,6 +1,6 @@
-﻿namespace Player
+﻿namespace InputReader
 {
-    public interface IEntetyInputSource
+    public interface IEntityInputSource
     {
         float HorizontalDirection{ get; }
         float VerticalDirection { get; }
