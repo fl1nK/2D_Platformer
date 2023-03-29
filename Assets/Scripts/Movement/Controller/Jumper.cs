@@ -1,18 +1,23 @@
-﻿using Core.Movement.Data;
+﻿using Movement.Data;
+using StatsSystem;
+using StatsSystem.Enum;
 using UnityEngine;
 
-namespace Core.Movement.Controller
+namespace Movement.Controller
 {
     public class Jumper
     {
         private readonly JumpData _jumpData;
         private readonly Rigidbody2D _rigidbody2D;
+        private readonly IStatValueGiver _statValueGiver;
+
         public bool IsJumping { get; private set; }
         
-        public Jumper(Rigidbody2D rigidbody2D, JumpData jumpData)
+        public Jumper(Rigidbody2D rigidbody2D, JumpData jumpData, IStatValueGiver statValueGiver)
         {
             _rigidbody2D = rigidbody2D;
             _jumpData = jumpData;
+            _statValueGiver = statValueGiver;
         }
         
         public void Jump()
@@ -21,7 +26,7 @@ namespace Core.Movement.Controller
                 return;
 
             IsJumping = true;
-            _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, _jumpData._jumpForce);
+            _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, _statValueGiver.GetStatValue(StatType.JumpForce));
         }
         
         public void JumpUpdate()

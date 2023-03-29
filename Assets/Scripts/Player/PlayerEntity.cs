@@ -1,8 +1,9 @@
 using System;
 using System.Collections;
 using Core.Animation;
-using Core.Movement.Controller;
-using Core.Movement.Data;
+using Movement.Controller;
+using Movement.Data;
+using StatsSystem;
 using UnityEngine;
 
 namespace Player
@@ -21,12 +22,12 @@ namespace Player
         private DirectionalMover _directionalMover;
         private Jumper _jumper;
 
-        void Start()
+        public void Initialize(IStatValueGiver statValueGiver)
         {
             _playerCollider = GetComponent<Collider2D>();
             _rigidbody2D = GetComponent<Rigidbody2D>();
-            _directionalMover = new DirectionalMover(_rigidbody2D, _directionMovementData);
-            _jumper = new Jumper(_rigidbody2D, _jumpData);
+            _directionalMover = new DirectionalMover(_rigidbody2D, _directionMovementData, statValueGiver);
+            _jumper = new Jumper(_rigidbody2D, _jumpData, statValueGiver);
         }
 
         private void Update()
